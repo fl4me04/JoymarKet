@@ -14,22 +14,40 @@ import model.User;
 public class UserHandler {
 	
 	public User getUser(String idUser) {
-		User user = null;
-		String query = "SELECT * FROM users where idUser = ?";
-		
-		try {
-			PreparedStatement ps = Connect.getInstance().prepareStatement(query);
-			ps.setString(1, idUser);
-			ResultSet rs = ps.executeQuery();
-			
-			if (rs.next()) {
-				user = new User(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("gender"), rs.getString("role"));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return user;
+		String query = "SELECT * FROM users WHERE idUser = ?";
+	    User user = null;
+	    
+	    try {
+	        PreparedStatement ps = Connect.getInstance().prepareStatement(query);
+	        ps.setString(1, idUser);
+	        ResultSet rs = ps.executeQuery();
+	        
+	        if (rs.next()) {
+	            String name = rs.getString("fullName");
+	            String email = rs.getString("email");
+	            String password = rs.getString("password");
+	            String phone = rs.getString("phone");
+	            String address = rs.getString("address");
+	            String role = rs.getString("role");
+	            String gender = rs.getString("gender");
+	            
+	            // LOGIKA POLYMORPHISM (Sama seperti Login)
+	            if (role.equalsIgnoreCase("Customer")) {
+	                double balance = rs.getDouble("balance");
+	                user = new Customer(idUser, name, email, password, phone, address, gender, balance);
+	            } 
+	            else if (role.equalsIgnoreCase("Admin")) {
+	                String emerg = rs.getString("emergencyContact");
+	                user = new Admin(idUser, name, email, password, phone, address, gender, emerg);
+	            }
+	            else {
+	                user = new User(idUser, name, email, password, phone, address, role, gender);
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return user;
 	}
 	
 	public boolean editProfile(String idUser, String fullName, String email, String password, String phone, String address) {
@@ -127,5 +145,38 @@ public class UserHandler {
 	    }
 	    
 	    return user;
+	}
+	
+	public boolean editProfile(String idUser, String fullName, String email, String password, String phone, String address, String gender) {
+	    String query = "UPDATE users SET fullName=?, email=?, password=?, phone=?, address=?, gender=? WHERE idUser=?";
+	    try {
+	        PreparedStatement ps = Connect.getInstance().prepareStatement(query);
+	        ps.setString(1, fullName);
+	        ps.setString(2, email);
+	        ps.setString(3, password);
+	        ps.setString(4, phone);
+	        ps.setString(5, address);
+	        ps.setString(6, gender);
+	        ps.setString(7, idUser);
+	        return ps.executeUpdate() > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
+	public boolean checkEmailAvailabilityForUpdate(String email, String currentId) {
+	    String query = "SELECT * FROM users WHERE email = ? AND idUser != ?";
+	    try {
+	        PreparedStatement ps = Connect.getInstance().prepareStatement(query);
+	        ps.setString(1, email);
+	        ps.setString(2, currentId);
+	        ResultSet rs = ps.executeQuery();
+	        
+	        return !rs.next();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 }
