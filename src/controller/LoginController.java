@@ -1,15 +1,8 @@
 package controller;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import database.Connect;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
-import model.Admin;
-import model.Customer;
 import model.User;
 import view.LoginPage;
 import view.MenuPage;

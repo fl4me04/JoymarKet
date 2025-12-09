@@ -1,8 +1,10 @@
 package controller;
 
 import javafx.stage.Stage;
+import model.User;
 import view.LoginPage;
 import view.MenuPage;
+import view.ProfilePage;
 
 public class MenuController {
     
@@ -35,9 +37,30 @@ public class MenuController {
                 System.out.println("Navigasi ke halaman Edit Stock...");
             });
         }
+        
+        if (view.getEditProfileBtn() != null) {	
+			view.getEditProfileBtn().setOnAction(e -> {
+				navigateToProfile();
+			});
+		}
     }
 
-    private void navigateToLogin() {
+    private void navigateToProfile() {
+    	try {
+            User currentUser = view.getUser(); 
+            
+            ProfilePage editPage = new ProfilePage(currentUser);
+            new ProfileController(editPage, stage);
+            
+            stage.setScene(editPage.getScene());
+            stage.setTitle("Edit Profile");
+            
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+	}
+
+	private void navigateToLogin() {
         try {
             LoginPage loginPage = new LoginPage();
             new LoginController(loginPage, stage);
