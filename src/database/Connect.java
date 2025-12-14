@@ -21,12 +21,12 @@ public final class Connect {
     
     private Connect() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            con = DriverManager.getConnection(CONNECTION, USERNAME, PASSWORD);
-            st = con.createStatement();
+            Class.forName("com.mysql.cj.jdbc.Driver"); // Load JDBC driver
+            con = DriverManager.getConnection(CONNECTION, USERNAME, PASSWORD); // Establish connection
+            st = con.createStatement(); // Create Statement object
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Failed to connect to database.");
+            System.err.println("Failed to connect to database.");
             System.exit(0);
         }
     }
@@ -38,7 +38,28 @@ public final class Connect {
         return instance;
     }
     
-    // Method to run SELECT queries (Simple)
+    
+    //TRANSAKSI
+   
+
+    // Getter untuk mendapatkan objek Connection (Penting untuk Transaksi Manual)
+    public Connection getConnection() {
+        return con;
+    }
+    
+    // Membuat PreparedStatement yang bisa mengembalikan ID yang dibuat otomatis (Generated Keys)
+    public PreparedStatement prepareStatement(String query, int returnGeneratedKeys) {
+        try {
+            return con.prepareStatement(query, returnGeneratedKeys);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+  
+
+    // Method to run SELECT queries
     public ResultSet select(String query) {
         try {
             return st.executeQuery(query);
@@ -57,7 +78,7 @@ public final class Connect {
         }
     }
     
-    // Method for PreparedStatement (SECURE for Login)
+    // Method for parameterized PreparedStatement
     public PreparedStatement prepareStatement(String query) {
         try {
             return con.prepareStatement(query);
@@ -66,5 +87,4 @@ public final class Connect {
             return null;
         }
     }
-
 }
