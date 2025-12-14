@@ -125,5 +125,4 @@ public class Main extends Application{
 //	    
 //	    System.out.println("Displaying Update Cart Page directly with dummy data.");
 //	   }
-
 }
