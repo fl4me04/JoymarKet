@@ -36,6 +36,7 @@ public class CheckoutPage {
 
     @SuppressWarnings("unchecked")
 	private void initialize() {
+    	// Initialize UI
         mainLayout = new BorderPane();
         mainLayout.setPadding(new Insets(20));
 

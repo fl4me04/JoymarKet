@@ -11,6 +11,7 @@ import model.User;
 
 public class UserHandler {
 	
+	// Function to get user by id
 	public User getUser(String idUser) {
 		String query = "SELECT * FROM users WHERE idUser = ?";
 	    User user = null;
@@ -48,6 +49,7 @@ public class UserHandler {
 	    return user;
 	}
 	
+	// Function to edit profile
 	public boolean editProfile(String idUser, String fullName, String email, String password, String phone, String address, String gender) {
 	    String query = "UPDATE users SET fullName=?, email=?, password=?, phone=?, address=?, gender=? WHERE idUser=?";
 	    try {
@@ -66,6 +68,7 @@ public class UserHandler {
 	    }
 	}
 	
+	// Function to add new user
 	public boolean addNewUser(String fullName, String email, String password, String phone, String address, String gender) {
         String query = "INSERT INTO users (fullName, email, password, phone, address, gender, role, balance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
@@ -88,6 +91,7 @@ public class UserHandler {
         }
 	}
 	
+	// Function to check email availability for register
 	public boolean checkEmailAvailability(String email) {
         String query = "SELECT * FROM users WHERE email = ?";
         try {
@@ -102,6 +106,7 @@ public class UserHandler {
         }
     }
 	
+	// Function login
 	public User login(String email, String password) {
 	    String query = "SELECT * FROM users WHERE email = ? AND password = ?";
 	    User user = null;
@@ -142,6 +147,7 @@ public class UserHandler {
 	    return user;
 	}
 
+	// Function for check email availability for update
 	public boolean checkEmailAvailabilityForUpdate(String email, String currentId) {
 	    String query = "SELECT * FROM users WHERE email = ? AND idUser != ?";
 	    try {

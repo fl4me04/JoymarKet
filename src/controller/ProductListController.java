@@ -68,7 +68,7 @@ public class ProductListController {
 
         int quantityToAdd = view.getQuantitySpinner().getValue();
         int stockDatabase = selectedProduct.getStock();
-        int quantityInCart = cartHandler.getCurrentQtyInCart(currentUser.getIdUser(), selectedProduct.getId());
+        int quantityInCart = cartHandler.getCurrentQtyInCart(currentUser.getIdUser(), selectedProduct.getIdProduct());
         int totalQuantity = quantityInCart + quantityToAdd;
         if (totalQuantity > stockDatabase) {
             int sisaBolehAmbil = stockDatabase - quantityInCart;
@@ -81,7 +81,7 @@ public class ProductListController {
             return;
         }
 
-        boolean success = cartHandler.addToCart(currentUser.getIdUser(), selectedProduct.getId(), quantityToAdd);
+        boolean success = cartHandler.addToCart(currentUser.getIdUser(), selectedProduct.getIdProduct(), quantityToAdd);
 
         if (success) {
             AlertHelper.showInfo("Success", "Successfully added to cart!");

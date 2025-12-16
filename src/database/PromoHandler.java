@@ -21,12 +21,7 @@ public class PromoHandler {
              ResultSet rs = ps.executeQuery()) {
             
             while(rs.next()) {
-                list.add(new Promo(
-                    rs.getString("idPromo"),
-                    rs.getString("code"),
-                    rs.getString("headline"),
-                    rs.getDouble("discountPercentage")
-                ));
+                list.add(new Promo(rs.getString("idPromo"), rs.getString("code"), rs.getString("headline"), rs.getDouble("discountPercentage")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -43,12 +38,7 @@ public class PromoHandler {
             ps.setString(1, code);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new Promo(
-                        rs.getString("idPromo"),
-                        rs.getString("code"),
-                        rs.getString("headline"),
-                        rs.getDouble("discountPercentage")
-                    );
+                    return new Promo(rs.getString("idPromo"), rs.getString("code"), rs.getString("headline"), rs.getDouble("discountPercentage"));
                 }
             }
         } catch (SQLException e) {

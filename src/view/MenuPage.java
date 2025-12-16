@@ -19,7 +19,7 @@ public class MenuPage {
 	BorderPane bp;
 	VBox menuContainer;
 	Label welcomeLabel;
-	Button logoutBtn, topupBtn, addToCartBtn, checkoutBtn, editProfileBtn, updateCartBtn, viewOrderBtn, editStockBtn, assignOrderBtn, updateStatusBtn;
+	Button logoutBtn, topupBtn, addToCartBtn, checkoutBtn, editProfileBtn, updateCartBtn, viewOrderBtn, viewAllOrdersBtn, viewAllCouriersBtn, editStockBtn, assignOrderBtn, updateStatusBtn;
 	
 	// Detecting which user is logged in
 	private User user;
@@ -66,15 +66,19 @@ public class MenuPage {
 
             menuContainer.getChildren().addAll(topupBtn, addToCartBtn, updateCartBtn, checkoutBtn, viewOrderBtn, editProfileBtn);
         } else if (user instanceof Admin) {
-            editStockBtn = new Button("1. Edit Product Stock");
-            assignOrderBtn = new Button("2. Assign Order to Courier");
-            editProfileBtn = new Button("3. Edit Profile");
+        	viewAllOrdersBtn = new Button("1. View All Orders");
+        	viewAllCouriersBtn = new Button("2. View All Couriers");
+            editStockBtn = new Button("3. Edit Product Stock");
+            assignOrderBtn = new Button("4. Assign Order to Courier");
+            editProfileBtn = new Button("5. Edit Profile");
             
+            styleButton(viewAllOrdersBtn);
+            styleButton(viewAllCouriersBtn);
             styleButton(editStockBtn);
             styleButton(assignOrderBtn);
             styleButton(editProfileBtn);
             
-            menuContainer.getChildren().addAll(editStockBtn, assignOrderBtn, editProfileBtn);
+            menuContainer.getChildren().addAll(viewAllOrdersBtn, viewAllCouriersBtn, editStockBtn, assignOrderBtn, editProfileBtn);
         } else if (user instanceof Courier) {
              updateStatusBtn = new Button("1. Update Delivery Status");
              editProfileBtn = new Button("2. Edit Profile");
@@ -137,6 +141,14 @@ public class MenuPage {
 
 	public Button getViewOrderBtn() {
 		return viewOrderBtn;
+	}
+
+	public Button getViewAllOrdersBtn() {
+		return viewAllOrdersBtn;
+	}
+
+	public Button getViewAllCouriersBtn() {
+		return viewAllCouriersBtn;
 	}
 
 	public User getUser() { return user; }

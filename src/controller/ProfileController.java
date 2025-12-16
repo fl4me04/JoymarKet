@@ -1,6 +1,9 @@
 package controller;
 
+import database.ProfileHandler;
 import javafx.stage.Stage;
+import model.Admin;
+import model.Courier;
 import model.User;
 import util.AlertHelper;
 import view.MenuPage;
@@ -8,63 +11,76 @@ import view.ProfilePage;
 
 public class ProfileController {
 
-	private ProfilePage view;
-	private Stage stage;
-	private UserController userController;
+    private ProfilePage view;
+    private Stage stage;
+    private ProfileHandler handler;
 
-	public ProfileController(ProfilePage view, Stage stage) {
+    public ProfileController(ProfilePage view, Stage stage) {
         this.view = view;
         this.stage = stage;
-        this.userController = new UserController();
+        this.handler = new ProfileHandler();
+        
         initializeTriggers();
     }
 
     private void initializeTriggers() {
-        view.getUpdateBtn().setOnAction(e -> {
-        	User currentUser = view.getCurrentUser();
-        	
-        	String id = view.getIdTf().getText();
-            String name = view.getNameTf().getText();
-            String email = view.getEmailTf().getText();
-            String phone = view.getPhoneTf().getText();
-            String address = view.getAddressTa().getText();
-            String inputPass = view.getPassTf().getText();
-            String inputConfPass = view.getConfPassTf().getText();
-
-            String gender = "";
-            if(view.getMaleRb().isSelected()) gender = "Male";
-            else if(view.getFemaleRb().isSelected()) gender = "Female";
-            
-            String result = userController.updateProfile(currentUser, name, email, phone, address, inputPass, inputConfPass, gender);
-            
-            if(result.equals("SUCCESS")) {
-            	AlertHelper.showInfo("Update Success", "Profile updated successfully!");
-            	
-            	currentUser.setFullName(name);
-                currentUser.setEmail(email);
-                currentUser.setPhone(phone);
-                currentUser.setAddress(address);
-                currentUser.setGender(gender);
-                
-                if(!inputPass.isEmpty()) currentUser.setPassword(inputPass);
-            } else {
-            	AlertHelper.showError("Update Failed", result);
-            }
-        });
+        view.getSaveBtn().setOnAction(e -> handleSave());
         
         view.getBackBtn().setOnAction(e -> {
-            navigateToMenu(view.getCurrentUser());
+            try {
+                MenuPage menu = new MenuPage(view.getCurrentUser());
+                new MenuController(menu, stage);
+                stage.setScene(menu.getScene());
+            } catch (Exception ex) { ex.printStackTrace(); }
         });
     }
 
-    private void navigateToMenu(User user) {
-        try {
-            MenuPage menuPage = new MenuPage(user);
-            new MenuController(menuPage, stage);
-            stage.setScene(menuPage.getScene());
-            stage.setTitle("Main Menu");
-        } catch (Exception e) {
-            e.printStackTrace();
+    private void handleSave() {
+        User user = view.getCurrentUser();
+        
+        String name = view.getNameField().getText();
+        String email = view.getEmailField().getText();
+        String pass = view.getPassField().getText();
+        String phone = view.getPhoneField().getText();
+        String addr = view.getAddressArea().getText();
+        String gender = view.getGenderBox().getValue();
+
+        if (name.isEmpty() || email.isEmpty() || pass.isEmpty()) {
+            AlertHelper.showError("Error", "Name, Email, and Password are required.");
+            return;
+        }
+
+        user.setFullName(name);
+        user.setEmail(email);
+        user.setPassword(pass);
+        user.setPhone(phone);
+        user.setAddress(addr);
+        user.setGender(gender);
+
+        // Specific Profile Page for Admin and Courier
+        if (user instanceof Admin) {
+            String emergency = view.getEmergencyField().getText();
+            ((Admin) user).setEmergencyContact(emergency);
+        } 
+        else if (user instanceof Courier) {
+            String vType = view.getVehicleTypeBox().getValue();
+            String vPlate = view.getPlateField().getText();
+            
+            if (vType == null || vPlate.isEmpty()) {
+                AlertHelper.showError("Error", "Vehicle details are required for Couriers.");
+                return;
+            }
+            
+            ((Courier) user).setVehicleType(vType);
+            ((Courier) user).setVehiclePlate(vPlate);
+        }
+
+        boolean success = handler.updateProfile(user);
+
+        if (success) {
+            AlertHelper.showInfo("Success", "Profile updated successfully!");
+        } else {
+            AlertHelper.showError("Failed", "Could not update profile in database.");
         }
     }
 }
