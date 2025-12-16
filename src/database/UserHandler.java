@@ -1,11 +1,9 @@
-package controller;
+package database;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import database.Connect;
-import javafx.scene.control.Alert.AlertType;
 import model.Admin;
 import model.Courier;
 import model.Customer;
@@ -50,26 +48,23 @@ public class UserHandler {
 	    return user;
 	}
 	
-	public boolean editProfile(String idUser, String fullName, String email, String password, String phone, String address) {
-        String query = "UPDATE users SET fullName=?, email=?, password=?, phone=?, address=? WHERE idUser=?";
-        
-        try {
-            PreparedStatement ps = Connect.getInstance().prepareStatement(query);
-            ps.setString(1, fullName);
-            ps.setString(2, email);
-            ps.setString(3, password);
-            ps.setString(4, phone);
-            ps.setString(5, address);
-            ps.setString(6, idUser);
-            
-            int result = ps.executeUpdate();
-            return result > 0;
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+	public boolean editProfile(String idUser, String fullName, String email, String password, String phone, String address, String gender) {
+	    String query = "UPDATE users SET fullName=?, email=?, password=?, phone=?, address=?, gender=? WHERE idUser=?";
+	    try {
+	        PreparedStatement ps = Connect.getInstance().prepareStatement(query);
+	        ps.setString(1, fullName);
+	        ps.setString(2, email);
+	        ps.setString(3, password);
+	        ps.setString(4, phone);
+	        ps.setString(5, address);
+	        ps.setString(6, gender);
+	        ps.setString(7, idUser);
+	        return ps.executeUpdate() > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
 	
 	public boolean addNewUser(String fullName, String email, String password, String phone, String address, String gender) {
         String query = "INSERT INTO users (fullName, email, password, phone, address, gender, role, balance) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -145,24 +140,6 @@ public class UserHandler {
 	    }
 	    
 	    return user;
-	}
-	
-	public boolean editProfile(String idUser, String fullName, String email, String password, String phone, String address, String gender) {
-	    String query = "UPDATE users SET fullName=?, email=?, password=?, phone=?, address=?, gender=? WHERE idUser=?";
-	    try {
-	        PreparedStatement ps = Connect.getInstance().prepareStatement(query);
-	        ps.setString(1, fullName);
-	        ps.setString(2, email);
-	        ps.setString(3, password);
-	        ps.setString(4, phone);
-	        ps.setString(5, address);
-	        ps.setString(6, gender);
-	        ps.setString(7, idUser);
-	        return ps.executeUpdate() > 0;
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    }
 	}
 
 	public boolean checkEmailAvailabilityForUpdate(String email, String currentId) {

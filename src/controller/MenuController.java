@@ -2,9 +2,14 @@ package controller;
 
 import javafx.stage.Stage;
 import model.User;
+import view.CheckoutPage;
 import view.LoginPage;
 import view.MenuPage;
+import view.OrderHistoryPage;
+import view.ProductListPage;
 import view.ProfilePage;
+import view.TopUpPage;
+import view.UpdateCartPage;
 
 public class MenuController {
     
@@ -18,20 +23,40 @@ public class MenuController {
     }
 
     private void initializeTriggers() {
-        // 1. Handle Logout
         view.getLogoutBtn().setOnAction(e -> {
             navigateToLogin();
         });
 
-        // 2. Handle Top Up Button
         if (view.getTopupBtn() != null) {
             view.getTopupBtn().setOnAction(e -> {
-                System.out.println("Navigasi ke halaman Top Up...");
-                // new TopUpController(...)
+                navigateToTopUp();
             });
         }
         
-        // 3. Handle Tombol Admin
+        if (view.getAddToCartBtn() != null) {
+        	view.getAddToCartBtn().setOnAction(e -> {
+        		navigateToAddToCart();
+        	});
+        }
+        
+        if (view.getUpdateCartBtn() != null) {
+        	view.getUpdateCartBtn().setOnAction(e -> {
+        		navigateToUpdateCart();
+        	});
+        }
+        
+        if (view.getCheckoutBtn() != null) {
+			view.getCheckoutBtn().setOnAction(e -> {
+				navigateToCheckout();
+			});
+		}
+        
+        if (view.getViewOrderBtn() != null) {
+			view.getViewOrderBtn().setOnAction(e -> {
+				navigateToOrderHistory();
+			});
+		}
+        
         if (view.getEditStockBtn() != null) {
             view.getEditStockBtn().setOnAction(e -> {
                 System.out.println("Navigasi ke halaman Edit Stock...");
@@ -45,7 +70,73 @@ public class MenuController {
 		}
     }
 
-    private void navigateToProfile() {
+    private void navigateToTopUp() {
+		try {
+			User currentUser = view.getUser();
+			
+			TopUpPage page = new TopUpPage(currentUser);
+	        new TopUpController(page, stage);
+	        stage.setScene(page.getScene());
+	        stage.setTitle("Top Up Balance");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToOrderHistory() {
+		try {
+			User currentUser = view.getUser();
+			
+			OrderHistoryPage historyPage = new OrderHistoryPage(currentUser);
+			new OrderHistoryController(historyPage, stage);
+			stage.setScene(historyPage.getScene());
+			stage.setTitle("Order History");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToCheckout() {
+		try {
+			User currentUser = view.getUser();
+			
+			CheckoutPage checkoutPage = new CheckoutPage(currentUser);
+		    new CheckoutController(checkoutPage, stage);
+		    stage.setScene(checkoutPage.getScene());
+		    stage.setTitle("Checkout");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToUpdateCart() {
+		try {
+			User currentUser = view.getUser();
+			
+	        UpdateCartPage page = new UpdateCartPage(currentUser);
+	        new UpdateCartController(page, stage);
+	        stage.setScene(page.getScene());
+	        stage.setTitle("My Cart");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToAddToCart() {
+		try {
+			User currentUser = view.getUser();
+			
+			ProductListPage page = new ProductListPage(currentUser);
+    	    new ProductListController(page, stage);
+    	    
+    	    stage.setScene(page.getScene());
+    	    stage.setTitle("Add To Cart");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToProfile() {
     	try {
             User currentUser = view.getUser(); 
             

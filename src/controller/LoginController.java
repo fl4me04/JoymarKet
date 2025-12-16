@@ -1,9 +1,8 @@
 package controller;
 
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import model.User;
+import util.AlertHelper;
 import view.LoginPage;
 import view.MenuPage;
 import view.RegisterPage;
@@ -12,11 +11,12 @@ public class LoginController {
 
 	private LoginPage view;
 	private Stage stage;
-	private UserHandler userHandler;
+	private UserController userController;
 	
 	public LoginController(LoginPage view, Stage stage) {
 		this.view = view;
 		this.stage = stage;
+		this.userController = new UserController();
 		// Triggers for Controller
 		initializeTriggers();
 	}
@@ -24,39 +24,34 @@ public class LoginController {
 	private void initializeTriggers() {
 		// Event Handler
 		view.getLoginBtn().setOnAction(e -> {
-			login();
+			String emailInput = view.getEmailTf().getText();
+			String passwordInput = view.getPasswordTf().getText();
+			
+			if(emailInput.isEmpty() || passwordInput.isEmpty()) {
+				AlertHelper.showError("Input Error!", "Please fill in all fields!");
+				return;
+			}
+			
+			User user = userController.login(emailInput, passwordInput);
+			
+			if(user != null) {
+				AlertHelper.showInfo("Login Success", "Login Successful!");
+				
+				try {
+					MenuPage menuPage = new MenuPage(user);
+					new MenuController(menuPage, stage);
+					stage.setScene(menuPage.getScene());
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			} else {
+				AlertHelper.showError("Login Failed", "Invalid email or password!");
+			}
 		});
 		
 		view.getRegisterLink().setOnAction(e -> {
 			navigateToRegister();
 		});
-	}
-	
-	private void login() {
-		String email = view.getEmailTf().getText();
-		String password = view.getPasswordTf().getText();
-		
-		if(email.isEmpty() || password.isEmpty()) {
-			showAlert(AlertType.ERROR, "Error!!!", "Please fill in all fields!");
-			return;
-		}
-		
-		userHandler = new UserHandler();
-		User user = userHandler.login(email, password);
-		
-		if(user != null) {
-			showAlert(AlertType.INFORMATION, "Success", "Login Successful!");
-			try {
-	            MenuPage menuPage = new MenuPage(user);
-	            new MenuController(menuPage, stage);
-	            
-	            stage.setScene(menuPage.getScene());    
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-        } else {
-            showAlert(AlertType.ERROR, "Login Failed", "Invalid Email or Password");
-        }
 	}
 	
 	private void navigateToRegister() {
@@ -68,13 +63,4 @@ public class LoginController {
 	        e.printStackTrace();
 	    }
 	}
-	
-	private void showAlert(AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
 }
