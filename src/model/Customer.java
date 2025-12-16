@@ -16,4 +16,10 @@ public class Customer extends User{
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
+	
+	// Di dalam class model.User atau model.Customer
+
+	public String getId() {
+	    return this.idUser; // Sesuaikan dengan nama variabel ID di class Anda
+	}
 }
