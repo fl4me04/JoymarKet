@@ -1,118 +1,160 @@
 package controller;
 
-import javafx.stage.Stage;
-import model.Cart;
-import model.Customer;
-import model.Product;
-import view.UpdateCartPage;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Locale;
 
-import database.TransactionManager;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
+import database.CartItemHandler;
+import javafx.stage.Stage;
+import model.CartItem;
+import model.User;
+import util.AlertHelper;
+import view.CheckoutPage;
+import view.MenuPage;
+import view.UpdateCartPage;
 
 public class UpdateCartController {
 
-    private Cart cart;
     private UpdateCartPage view;
     private Stage stage;
-    private TransactionManager transactionManager;
-    private Customer currentUser;
+    private CartItemHandler cartHandler;
+    private User currentUser;
 
-    public UpdateCartController(Cart cart, UpdateCartPage view, Stage stage, Customer currentUser) {
-        this.cart = cart;
+    public UpdateCartController(UpdateCartPage view, Stage stage) {
         this.view = view;
         this.stage = stage;
-        this.currentUser = currentUser;
-        this.transactionManager = new TransactionManager();
-        initController();
+        this.currentUser = view.getCurrentUser();
+        this.cartHandler = new CartItemHandler();
+
+        loadCartData();
+        initializeTriggers();
     }
 
-    private void initController() {
-       
-        for (int i = 0; i < view.getAddBtns().size(); i++) {
-            int index = i;
-            view.getAddBtns().get(i).setOnAction(e -> {
-                Product product = view.getProducts().get(index);
-                int qty = view.getAddQtyInputs().get(index).getValue();
+    // Function to load Cart from Database
+    private void loadCartData() {
+        ArrayList<CartItem> items = cartHandler.getCartItems(currentUser.getIdUser());
+        
+        view.getCartTable().getItems().clear();
+        view.getCartTable().getItems().addAll(items);
+        
+        calculateGrandTotal(items);
+    }
 
-                cart.addToCart(product, qty);
-                handleSaveDraft();
-                
-                
-                view.refreshItems(); 
-           
-                initController(); 
-                
-                showAlert(Alert.AlertType.INFORMATION, "Added", qty + " " + product.getName() + " added. Draft saved.");
-            });
+    // Function to calculate grand total items
+    private void calculateGrandTotal(ArrayList<CartItem> items) {
+        double total = 0;
+        for (CartItem item : items) {
+            total += item.getTotalPrice();
         }
         
+        // Change into Rupiah Format
+        NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+        String formattedTotal = currencyFormat.format(total);
         
-        view.getSaveChangesBtn().setOnAction(e -> {
-            handleUpdateQuantities();
-            handleSaveDraft();
-            
-            showAlert(
-                Alert.AlertType.INFORMATION, 
-                "Success", 
-                "Cart updated and draft saved successfully! Total: Rp " + cart.getTotal()
-            );
-            
-            if (view.getMenuScene() != null) {
-                stage.setScene(view.getMenuScene());
+        view.getTotalPriceLabel().setText("Grand Total: " + formattedTotal);
+    }
+
+    // Function to Initialize Trigger
+    private void initializeTriggers() {
+        // Select Which Items to be edited
+        view.getCartTable().getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                view.getSelectedItemLabel().setText(newVal.getProduct().getName());
+                view.getQuantitySpinner().getValueFactory().setValue(newVal.getCount());
             }
         });
-        
-       
-        for (int i = 0; i < view.getDeleteBtns().size(); i++) {
-            Button deleteBtn = view.getDeleteBtns().get(i);
-            int index = i;
-            
-            deleteBtn.setOnAction(e -> {
-                cart.removeItem(cart.getItems().get(index).getProduct());
-                
-                handleSaveDraft();
 
-                showAlert(
-                    Alert.AlertType.INFORMATION, 
-                    "Removed", 
-                    "Item removed. Reloading view..."
-                );
-                
-                
-                view.refreshItems();
-                
-                initController(); 
-            });
-        }
-        
-        view.getBackBtn().setOnAction(e -> {
-            if (view.getMenuScene() != null) {
-                stage.setScene(view.getMenuScene());
-            }
+        // Update Item Handler
+        view.getUpdateBtn().setOnAction(e -> {
+            handleUpdateItem();
         });
+
+        // Delete Button Handler
+        view.getDeleteBtn().setOnAction(e -> {
+            handleDeleteItem();
+        });
+        
+        view.getCheckoutBtn().setOnAction(e -> {
+        	navigateToCheckout();
+        });
+
+        // Back to Menu Button
+        view.getBackBtn().setOnAction(e -> navigateBack());
     }
 
-    private void handleUpdateQuantities() {
-        for (int i = 0; i < cart.getItems().size(); i++) {
-            int newQty = view.getUpdateQtyInputs().get(i).getValue();
-            cart.updateItemQuantity(cart.getItems().get(i).getProduct(), newQty);
+    private void navigateToCheckout() {
+    	try {
+			User currentUser = view.getCurrentUser();
+			
+			CheckoutPage checkoutPage = new CheckoutPage(currentUser);
+		    new CheckoutController(checkoutPage, stage);
+		    stage.setScene(checkoutPage.getScene());
+		    stage.setTitle("Checkout");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	// Function to Handle Update Item
+    private void handleUpdateItem() {
+        CartItem selectedItem = view.getCartTable().getSelectionModel().getSelectedItem();
+        
+        if (selectedItem == null) {
+            AlertHelper.showError("Selection Error", "Please select an item to update!");
+            return;
+        }
+
+        int newQty = view.getQuantitySpinner().getValue();
+        int currentStock = selectedItem.getProduct().getStock();
+
+        if (newQty <= 0) {
+            AlertHelper.showError("Invalid Quantity", "Quantity must be greater than 0.");
+            return;
+        }
+        
+        if (newQty > currentStock) {
+            AlertHelper.showError("Stock Limit", "Not enough stock! Max: " + currentStock);
+            return;
+        }
+
+        boolean success = cartHandler.editCartItem(currentUser.getIdUser(), selectedItem.getProduct().getId(), newQty);
+
+        if (success) {
+            AlertHelper.showInfo("Success", "Cart updated successfully!");
+            loadCartData();
+        } else {
+            AlertHelper.showError("Failed", "Failed to update cart.");
         }
     }
 
-    private void handleSaveDraft() {
-        boolean success = transactionManager.updateDraftTransaction(cart, currentUser.getId());
+    // Function to Handle Delete Item
+    private void handleDeleteItem() {
+        CartItem selectedItem = view.getCartTable().getSelectionModel().getSelectedItem();
+        
+        if (selectedItem == null) {
+            AlertHelper.showError("Selection Error", "Please select an item to remove!");
+            return;
+        }
 
-        if (!success) {
-            System.err.println("WARNING: Failed to save cart draft to database from Update Cart!");
+        boolean success = cartHandler.deleteCartItem(currentUser.getIdUser(), selectedItem.getProduct().getId());
+
+        if (success) {
+            AlertHelper.showInfo("Success", "Item removed from cart.");
+            view.getCartTable().getSelectionModel().clearSelection();
+            view.getSelectedItemLabel().setText("Select an item to edit");            
+            loadCartData();
+        } else {
+            AlertHelper.showError("Failed", "Failed to remove item.");
         }
     }
 
-    private void showAlert(Alert.AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-        alert.showAndWait();
+    private void navigateBack() {
+        try {
+            MenuPage menuPage = new MenuPage(currentUser);
+            new MenuController(menuPage, stage);
+            stage.setScene(menuPage.getScene());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

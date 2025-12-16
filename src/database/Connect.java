@@ -37,14 +37,15 @@ public final class Connect {
         }
         return instance;
     }
-    
-    
-    //TRANSAKSI
-   
 
     // Getter untuk mendapatkan objek Connection (Penting untuk Transaksi Manual)
     public Connection getConnection() {
-        return con;
+    	try {
+            return DriverManager.getConnection(CONNECTION, USERNAME, PASSWORD);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
     
     // Membuat PreparedStatement yang bisa mengembalikan ID yang dibuat otomatis (Generated Keys)

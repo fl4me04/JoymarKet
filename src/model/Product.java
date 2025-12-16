@@ -3,15 +3,40 @@ package model;
 public class Product {
     private String id;
     private String name;
-    private int price;
+    private double price;
+    private int stock;
+    private String category;
+    
+	public Product(String id, String name, double price, int stock, String category) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.price = price;
+		this.stock = stock;
+		this.category = category;
+	}
 
-    public Product(String id, String name, int price) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public int getPrice() { return price; }
+	public String getName() {
+		return name;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public int getStock() {
+		return stock;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
 }

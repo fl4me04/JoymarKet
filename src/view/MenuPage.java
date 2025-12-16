@@ -19,7 +19,7 @@ public class MenuPage {
 	BorderPane bp;
 	VBox menuContainer;
 	Label welcomeLabel;
-	Button logoutBtn, topupBtn, addToCartBtn, checkoutBtn, editProfileBtn, updateCartBtn, editStockBtn, assignOrderBtn, updateStatusBtn;
+	Button logoutBtn, topupBtn, addToCartBtn, checkoutBtn, editProfileBtn, updateCartBtn, viewOrderBtn, editStockBtn, assignOrderBtn, updateStatusBtn;
 	
 	// Detecting which user is logged in
 	private User user;
@@ -54,15 +54,17 @@ public class MenuPage {
             addToCartBtn = new Button("2. Add Product to Cart");
             updateCartBtn = new Button("3. Update Cart Items");
             checkoutBtn = new Button("4. Checkout Cart");
-            editProfileBtn = new Button("5. Edit Profile");
+            viewOrderBtn = new Button("5. View Order History");
+            editProfileBtn = new Button("6. Edit Profile");
             
             styleButton(topupBtn);
             styleButton(addToCartBtn);
             styleButton(updateCartBtn);
             styleButton(checkoutBtn);
+            styleButton(viewOrderBtn);
             styleButton(editProfileBtn);
 
-            menuContainer.getChildren().addAll(topupBtn, addToCartBtn, updateCartBtn, checkoutBtn, editProfileBtn);
+            menuContainer.getChildren().addAll(topupBtn, addToCartBtn, updateCartBtn, checkoutBtn, viewOrderBtn, editProfileBtn);
         } else if (user instanceof Admin) {
             editStockBtn = new Button("1. Edit Product Stock");
             assignOrderBtn = new Button("2. Assign Order to Courier");
@@ -131,6 +133,10 @@ public class MenuPage {
 
 	public Button getUpdateStatusBtn() {
 		return updateStatusBtn;
+	}
+
+	public Button getViewOrderBtn() {
+		return viewOrderBtn;
 	}
 
 	public User getUser() { return user; }

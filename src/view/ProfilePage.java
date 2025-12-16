@@ -149,18 +149,55 @@ public class ProfilePage {
         }
     }
 
-    public Scene getScene() { return scene; }
-    
-    public TextField getIdTf() { return idTf; }
-    public TextField getNameTf() { return nameTf; }
-    public TextField getEmailTf() { return emailTf; }
-    public PasswordField getPassTf() { return passTf; }
-    public PasswordField getConfPassTf() { return confPassTf; }
-    public TextField getPhoneTf() { return phoneTf; }
-    public TextArea getAddressTa() { return addressTa; }
-    public RadioButton getMaleRb() { return maleRb; }
-    public RadioButton getFemaleRb() { return femaleRb; }
-    public Button getUpdateBtn() { return updateBtn; }
-    public Button getBackBtn() { return backBtn; }
-    public User getCurrentUser() { return currentUser; }
+	public Scene getScene() {
+		return scene;
+	}
+
+	public User getCurrentUser() {
+		return currentUser;
+	}
+
+	public TextField getIdTf() {
+		return idTf;
+	}
+
+	public TextField getNameTf() {
+		return nameTf;
+	}
+
+	public TextField getEmailTf() {
+		return emailTf;
+	}
+
+	public TextField getPhoneTf() {
+		return phoneTf;
+	}
+
+	public PasswordField getPassTf() {
+		return passTf;
+	}
+
+	public PasswordField getConfPassTf() {
+		return confPassTf;
+	}
+
+	public TextArea getAddressTa() {
+		return addressTa;
+	}
+
+	public RadioButton getMaleRb() {
+		return maleRb;
+	}
+
+	public RadioButton getFemaleRb() {
+		return femaleRb;
+	}
+
+	public Button getUpdateBtn() {
+		return updateBtn;
+	}
+
+	public Button getBackBtn() {
+		return backBtn;
+	}
 }
