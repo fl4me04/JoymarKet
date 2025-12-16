@@ -38,7 +38,7 @@ public final class Connect {
         return instance;
     }
 
-    // Getter untuk mendapatkan objek Connection (Penting untuk Transaksi Manual)
+    // Getter to get object connection
     public Connection getConnection() {
     	try {
             return DriverManager.getConnection(CONNECTION, USERNAME, PASSWORD);
@@ -48,7 +48,7 @@ public final class Connect {
         }
     }
     
-    // Membuat PreparedStatement yang bisa mengembalikan ID yang dibuat otomatis (Generated Keys)
+    // Method to return ID Automatically (generatedKeys)
     public PreparedStatement prepareStatement(String query, int returnGeneratedKeys) {
         try {
             return con.prepareStatement(query, returnGeneratedKeys);

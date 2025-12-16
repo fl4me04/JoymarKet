@@ -31,6 +31,7 @@ public class TopUpPage {
     }
 
     private void initialize() {
+    	// Initialize UI
         mainLayout = new BorderPane();
         mainLayout.setPadding(new Insets(20));
 

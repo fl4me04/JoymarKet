@@ -40,6 +40,7 @@ public class ProductListPage {
 
     @SuppressWarnings("unchecked")
 	private void initialize() {
+    	// Format into Rupiah
     	NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
     	
         mainLayout = new BorderPane();
@@ -50,6 +51,7 @@ public class ProductListPage {
         
         productTable = new TableView<>();
         
+        // Making product table
         TableColumn<Product, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         nameCol.setMinWidth(200);
@@ -63,6 +65,7 @@ public class ProductListPage {
         TableColumn<Product, Double> priceCol = new TableColumn<>("Price");
         priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
         
+        // Formatting Price Column into Rupiah
         priceCol.setCellFactory(column -> new TableCell<Product, Double>() {
             @Override
             protected void updateItem(Double item, boolean empty) {

@@ -5,6 +5,7 @@ import javafx.scene.control.Alert.AlertType;
 
 public class AlertHelper {
 
+	// Show Error Message
     public static void showError(String title, String content) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle(title);
@@ -13,6 +14,7 @@ public class AlertHelper {
         alert.showAndWait();
     }
 
+    // Show Success Message
     public static void showInfo(String title, String content) {
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle(title);

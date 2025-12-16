@@ -117,7 +117,7 @@ public class UpdateCartController {
             return;
         }
 
-        boolean success = cartHandler.editCartItem(currentUser.getIdUser(), selectedItem.getProduct().getId(), newQty);
+        boolean success = cartHandler.editCartItem(currentUser.getIdUser(), selectedItem.getProduct().getIdProduct(), newQty);
 
         if (success) {
             AlertHelper.showInfo("Success", "Cart updated successfully!");
@@ -136,7 +136,7 @@ public class UpdateCartController {
             return;
         }
 
-        boolean success = cartHandler.deleteCartItem(currentUser.getIdUser(), selectedItem.getProduct().getId());
+        boolean success = cartHandler.deleteCartItem(currentUser.getIdUser(), selectedItem.getProduct().getIdProduct());
 
         if (success) {
             AlertHelper.showInfo("Success", "Item removed from cart.");

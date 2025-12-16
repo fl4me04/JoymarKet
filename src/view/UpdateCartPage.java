@@ -44,6 +44,7 @@ public class UpdateCartPage {
 
     @SuppressWarnings("unchecked")
 	private void initialize() {
+    	// Format into Rupiah
     	NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
     	
         mainLayout = new BorderPane();
@@ -54,6 +55,7 @@ public class UpdateCartPage {
 
         cartTable = new TableView<>();
 
+        // Create Table
         TableColumn<CartItem, String> nameCol = new TableColumn<>("Product");
         nameCol.setCellValueFactory(cellData -> 
             new SimpleStringProperty(cellData.getValue().getProduct().getName()));
@@ -63,6 +65,7 @@ public class UpdateCartPage {
         priceCol.setCellValueFactory(cellData -> 
             new SimpleObjectProperty<>(cellData.getValue().getProduct().getPrice()));
         
+        // Formatting Price Column into Rupiah
         priceCol.setCellFactory(column -> new TableCell<CartItem, Double>() {
             @Override
             protected void updateItem(Double item, boolean empty) {
@@ -82,6 +85,7 @@ public class UpdateCartPage {
         totalCol.setCellValueFactory(cellData -> 
             new SimpleObjectProperty<>(cellData.getValue().getTotalPrice()));
         
+        // Formatting Total Column into Rupiah
         totalCol.setCellFactory(column -> new TableCell<CartItem, Double>() {
             @Override
             protected void updateItem(Double item, boolean empty) {

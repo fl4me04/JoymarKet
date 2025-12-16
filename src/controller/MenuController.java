@@ -2,7 +2,12 @@ package controller;
 
 import javafx.stage.Stage;
 import model.User;
+import view.AllOrdersPage;
+import view.AssignCourierPage;
+import view.AssignedDeliveriesPage;
 import view.CheckoutPage;
+import view.CourierListPage;
+import view.EditStockPage;
 import view.LoginPage;
 import view.MenuPage;
 import view.OrderHistoryPage;
@@ -57,11 +62,35 @@ public class MenuController {
 			});
 		}
         
+        if (view.getViewAllOrdersBtn() != null) {
+			view.getViewAllOrdersBtn().setOnAction(e -> {
+				navigateToViewOrders();
+			});
+		}
+        
+        if (view.getViewAllCouriersBtn() != null) {
+			view.getViewAllCouriersBtn().setOnAction(e -> {
+				navigateToViewCouriers();
+			});
+		}
+        
         if (view.getEditStockBtn() != null) {
             view.getEditStockBtn().setOnAction(e -> {
-                System.out.println("Navigasi ke halaman Edit Stock...");
+                navigateToEditStock();
             });
         }
+        
+        if (view.getAssignOrderBtn() != null) {
+			view.getAssignOrderBtn().setOnAction(e -> {
+				navigateToAssignOrder();
+			});
+		}
+        
+        if (view.getUpdateStatusBtn() != null) {
+			view.getUpdateStatusBtn().setOnAction(e -> {
+				navigateToUpdateStatus();
+			});
+		}
         
         if (view.getEditProfileBtn() != null) {	
 			view.getEditProfileBtn().setOnAction(e -> {
@@ -70,7 +99,72 @@ public class MenuController {
 		}
     }
 
-    private void navigateToTopUp() {
+    private void navigateToViewCouriers() {
+		try {
+			User currentUser = view.getUser();
+			
+			CourierListPage page = new CourierListPage(currentUser);
+			new CourierListController(page, stage);
+			stage.setScene(page.getScene());
+			stage.setTitle("Admin - View All Couriers");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToViewOrders() {
+		try {
+			User currentUser = view.getUser();
+			
+			AllOrdersPage page = new AllOrdersPage(currentUser);
+	        new AllOrdersController(page, stage);
+	        stage.setScene(page.getScene());
+	        stage.setTitle("Admin - View All Orders");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToUpdateStatus() {
+		try {
+			User currentUser = view.getUser();
+			
+			AssignedDeliveriesPage page = new AssignedDeliveriesPage(currentUser);
+	        new AssignedDeliveriesController(page, stage);
+	        stage.setScene(page.getScene());
+	        stage.setTitle("Courier - My Deliveries");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToAssignOrder() {
+		try {
+			User currentUser = view.getUser();
+			
+			AssignCourierPage page = new AssignCourierPage(currentUser);
+	        new AssignCourierController(page, stage);
+	        stage.setScene(page.getScene());
+	        stage.setTitle("Admin - Assign Courier");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToEditStock() {
+		try {
+			User currentUser = view.getUser();
+			
+			EditStockPage page = new EditStockPage(currentUser);
+	        new EditStockController(page, stage);
+	        stage.setScene(page.getScene());
+	        stage.setTitle("Admin - Manage Stock");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void navigateToTopUp() {
 		try {
 			User currentUser = view.getUser();
 			
@@ -158,7 +252,6 @@ public class MenuController {
             
             stage.setScene(loginPage.getScene());
             stage.setTitle("Login Page");
-            System.out.println("Berhasil Logout");
         } catch (Exception e) {
             e.printStackTrace();
         }

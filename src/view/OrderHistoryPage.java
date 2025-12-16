@@ -1,6 +1,7 @@
 package view;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -32,6 +33,7 @@ public class OrderHistoryPage {
 
     @SuppressWarnings("unchecked")
 	private void initialize() {
+    	// Initialize UI
         mainLayout = new BorderPane();
         mainLayout.setPadding(new Insets(20));
 
@@ -70,7 +72,8 @@ public class OrderHistoryPage {
         detailTable = new TableView<>();
         detailTable.setPrefHeight(200);
         detailTable.setPlaceholder(new Label("Select an order to view items"));
-
+        
+        // Making detail order table
         TableColumn<OrderDetail, String> productCol = new TableColumn<>("Product Name");
         productCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getProduct().getName()));
 
@@ -89,11 +92,14 @@ public class OrderHistoryPage {
         
         VBox centerLayout = new VBox(20);
         centerLayout.getChildren().addAll(orderTable, new Separator(), detailBox);
+        
+        titleLabel.setPadding(new Insets(0, 0, 20, 0));
 
         mainLayout.setTop(titleLabel);
         mainLayout.setCenter(centerLayout);
         mainLayout.setBottom(backBtn);
         BorderPane.setMargin(backBtn, new Insets(20, 0, 0, 0));
+        BorderPane.setAlignment(titleLabel, Pos.CENTER);
 
         scene = new Scene(mainLayout, 800, 600);
     }

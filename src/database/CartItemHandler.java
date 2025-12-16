@@ -85,19 +85,9 @@ public class CartItemHandler {
             ps.setString(1, idCustomer);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    Product product = new Product(
-                        rs.getString("idProduct"),
-                        rs.getString("name"),
-                        rs.getDouble("price"),
-                        rs.getInt("stock"),
-                        rs.getString("category")
-                    );
+                    Product product = new Product(rs.getString("idProduct"), rs.getString("name"), rs.getDouble("price"), rs.getInt("stock"), rs.getString("category"));
 
-                    CartItem item = new CartItem(
-                        rs.getString("idCustomer"),
-                        rs.getString("idProduct"),
-                        rs.getInt("count")
-                    );
+                    CartItem item = new CartItem(rs.getString("idCustomer"), rs.getString("idProduct"), rs.getInt("count"));
   
                     item.setProduct(product);
                     
